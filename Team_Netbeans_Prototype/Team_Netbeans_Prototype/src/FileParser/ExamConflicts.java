@@ -2,6 +2,8 @@ package FileParser;
 
 import java.util.ArrayList;
 
+//test
+
 public class ExamConflicts {
 
 	public ArrayList<CourseInfo> conflicts;
