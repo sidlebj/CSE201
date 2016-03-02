@@ -8,6 +8,8 @@ import java.util.ArrayList;
  * We mainly deal in ArrayLists of CourseInfo objects.
  */
 
+// test
+
 public class CourseInfo {
 
 	private int crn;
