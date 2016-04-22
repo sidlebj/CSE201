@@ -70,12 +70,30 @@ public class CourseEntry extends JFrame {
 		
 		JButton getFinalsSchedule = new JButton("Show Final Exam Schedule");
 		// Add ActionListener to get finals schedule
+		//ActionListener to create a finals schedule panel
+		getFinalsSchedule.addActionListener(new ActionListener() {
+			//action performed when next is pushed
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				try {
+					//this needs to be redone to reflect a weekly schedule.
+					//the schedule class is here as a placeholder until we write child classes
+					Schedule examSchedule = new Schedule(coursesSelected);
+					examSchedule.setVisible(true);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+			}
+		);
 		JButton back = new JButton ("Back");
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 				try { 
-				coursesSelected.clear();	
+				//took this out to keep the courses when going back
+					//might make a clear button
+				//coursesSelected.clear();	
 				ChooseMajor majorChoice = new ChooseMajor();
 				majorChoice.setVisible(true);
 			} catch (Exception ex) {
