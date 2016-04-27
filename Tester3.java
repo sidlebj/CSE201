@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -103,10 +104,32 @@ public class Tester3 extends JFrame {
 		btnShowFinalsSchedule = new JButton("Show Finals Schedule");
 		btnShowFinalsSchedule.setBounds(491, 393, 178, 29);
 		contentPane.add(btnShowFinalsSchedule);
+		btnShowFinalsSchedule.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				try {
+					dispose();
+					ExamSchedule ec = new ExamSchedule();
+					ec.setVisible(true);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
 		
 		btnBack = new JButton("Back");
 		btnBack.setBounds(6, 393, 117, 29);
 		contentPane.add(btnBack);
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				try {
+					dispose();
+					GetInfo ec = new GetInfo();
+					ec.setVisible(true);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
 		
 		addButton = new JButton(">>");
 		addButton.setBounds(177, 166, 61, 22);
