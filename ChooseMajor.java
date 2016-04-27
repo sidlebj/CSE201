@@ -36,14 +36,17 @@ public class ChooseMajor extends JFrame {
 	}
 
 	public ChooseMajor() {
+		setResizable(false);
+		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		JButton cs = new JButton("Computer Science");
+		cs.setBounds(149, 83, 147, 36);
 		JButton se = new JButton("Software Engineering");
+		se.setBounds(149, 121, 147, 36);
 		JLabel label = new JLabel("Select a major", JLabel.CENTER);
-//		Color lightBlue = new Color(102, 178, 255);
-//		contentPane.setBackground(lightBlue);
+		label.setBounds(5, 5, 440, 16);
 	
 		cs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)  {
@@ -74,6 +77,7 @@ public class ChooseMajor extends JFrame {
 		});
 		
 		JButton back = new JButton("Back");
+		back.setBounds(149, 243, 147, 29);
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -84,11 +88,11 @@ public class ChooseMajor extends JFrame {
 		
 		cs.setPreferredSize(new Dimension(220, 50));
 		se.setPreferredSize(new Dimension(220, 50));
-		contentPane.setLayout(new BorderLayout());
-		contentPane.add(label, BorderLayout.PAGE_START);
-		contentPane.add(cs, BorderLayout.LINE_START);
-		contentPane.add(se, BorderLayout.LINE_END);
-		contentPane.add(back, BorderLayout.SOUTH);
+		contentPane.setLayout(null);
+		contentPane.add(label);
+		contentPane.add(cs);
+		contentPane.add(se);
+		contentPane.add(back);
 		
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
