@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.JList;
 
+
 public class EnterClasses extends JFrame {
 	
 	private JList courseList;
@@ -278,5 +279,4 @@ public class EnterClasses extends JFrame {
 	
 	
 }
-
 

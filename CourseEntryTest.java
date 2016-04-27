@@ -1,48 +1,27 @@
-import java.awt.EventQueue;
-
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
+/*from   w  ww  .  j  ava 2s.  c  o m*/
+import javax.swing.AbstractListModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.border.EmptyBorder;
+import javax.swing.ListModel;
 
-public class CourseEntryTest extends JPanel {
+public class CourseEntryTest {
 	
-	private JFrame content = new JFrame();
-	private JSplitPane panel;
+  public static void main(String args[]) {
 	
-	private void setUp() {
-		content.setBounds(100, 100, 450, 300);
-		content.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		content.setVisible(true);
-	}
-	
-	public CourseEntryTest() {
-		setUp();
-		JScrollPane coursesOffered = new JScrollPane();
-		panel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		JLabel test = new JLabel("Test");
-		panel.add(test);
-		
-		content.setContentPane(panel);
-		
-		
-	}
-	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					CourseEntryTest test = new CourseEntryTest();
-					test.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-
-}
+  }
+ }
+  

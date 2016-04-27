@@ -1,30 +1,63 @@
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Scanner;
-
+import java.util.List;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+import javax.swing.JScrollPane;
+import javax.swing.ListModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 public class CourseEntry extends JFrame {
-	public static ArrayList<Course> coursesOffered = new ArrayList<Course>();
-	public static ArrayList<Course> coursesSelected = new ArrayList<Course>();
-	private JPanel contentPane;
+	public ArrayList<Course> coursesAvailable = new ArrayList<Course>();
+	public ArrayList<Course> majorCourses = new ArrayList<Course>();
 
+	private JPanel contentPane;
+	private DefaultTableModel model;
+	private JTable calendar;
+	private JList<Course> courseList;
+	private DefaultListModel<Course> courseListModel;
+	private JScrollPane listPane;
+	private JScrollPane calendarPane;
+	private JLabel lblCourses;
+	private JButton btnShowFinalsSchedule;
+	private JButton btnBack;
+	private JButton addButton;
+	private JButton removeButton;
+	private JLabel lblWeeklySchedule;
+	private JTextField statusBar;
+	private JTextField errorBar; 
+
+	private String[] columnNames = {"Time", "M", "T", "W", "R", "F"};
+	String[][] data = { {"8", "", "", "", "", ""}, 
+			{"9", "","", "", "", ""},
+			{"10", "","", "", "", ""},
+			{"11", "","", "", "", ""},
+			{"12", "","", "", "", ""},
+			{"1", "","", "", "", ""},
+			{"2", "","", "", "", ""},
+			{"3", "","", "", "", ""},
+			{"4", "","", "", "", ""},
+			{"5", "","", "", "", ""},
+			{"6", "","", "", "", ""},
+			{"7", "","", "", "", ""}};
+	
 	public static void main(String[] args) {
-		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					CourseEntry frame = new CourseEntry();
+					Tester3 frame = new Tester3();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -32,159 +65,397 @@ public class CourseEntry extends JFrame {
 			}
 		});
 	}
-
-	public CourseEntry() throws Exception{
-		loadCoursesOffered();
+	
+	public CourseEntry() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
+		setBounds(100, 100, 675, 450);
+		contentPane = new JPanel(null);
+		setContentPane(contentPane);
 		
-		JComboBox<Course> courseSelect1 = new JComboBox<Course>();
-		for (int i = 0; i < coursesOffered.size(); i++) {
-			courseSelect1.addItem(coursesOffered.get(i));
-		}
-		coursesSelected.add((Course)courseSelect1.getSelectedItem());
+		calendar = new JTable();
+		model = new DefaultTableModel(data, columnNames);
+		calendar.setModel(model);
+		coursesAvailable = new ArrayList<Course>();
+	
+		Course a = new Course("CSE 174 A", "James Kiper", 800, 925, new char[]{'M', 'W', 'F'}, 
+				new String[]{"None"});
+		coursesAvailable.add(a);
+		Course b = new Course("CSE 271 B", "Michael Stahr", 1300, 1450, new char[]{'T', 'R'},
+				new String[]{"CSE 174"});
+		coursesAvailable.add(b);
+		Course c = new Course("CSE 274 C", "Prakash Duraisamy", 1300, 1450, new char[]{'T', 'F'},
+				new String[]{"CSE 271"});
+		coursesAvailable.add(c);
+		Course d = new Course("CSE 148 D", "Someone Irrelevant", 1000, 1200, new char[]{'M', 'W', 'F'},
+				new String[]{"None"});
+		coursesAvailable.add(d);
 		
-		JComboBox<Course> courseSelect2 = new JComboBox<Course>();
-		for (int i = 0; i < coursesOffered.size(); i++) {
-			courseSelect2.addItem(coursesOffered.get(i));
+		majorCourses.add(new Course("CSE 174"));
+		majorCourses.add(new Course("CSE 271"));
+		majorCourses.add(new Course("CSE 274"));
+		
+		courseListModel = new DefaultListModel<Course>();
+		
+		for (int i = 0; i < coursesAvailable.size(); i++) {
+			courseListModel.addElement(coursesAvailable.get(i));
 		}
-		coursesSelected.add((Course) courseSelect2.getSelectedItem());
-//		
-//		courseSelect2.addActionListener(new ActionListener() {
+		
+		courseList = new JList(courseListModel);
+
+		listPane = new JScrollPane(courseList);
+		listPane.setBounds(25, 70, 140, 300);
+		
+		calendarPane = new JScrollPane(calendar);
+		calendarPane.setBounds(250, 70, 400, 230);
+		
+		contentPane.add(listPane);
+		contentPane.add(calendarPane);
+		
+		lblCourses = new JLabel("Courses");
+		lblCourses.setBounds(66, 51, 61, 16);
+		contentPane.add(lblCourses);
+		
+		btnShowFinalsSchedule = new JButton("Show Finals Schedule");
+		btnShowFinalsSchedule.setBounds(491, 393, 178, 29);
+//		btnShowFinalsSchedule.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
-//				if (! checkConflicts(coursesSelected.get(0), coursesSelected.get(1))) {
-//					 JLabel error = new JLabel("Courses conflcit");
-//					 contentPane.add(error);
-//					 contentPane.revalidate();
-//					 contentPane.repaint();
+//				try {
+//					dispose();
+//					ExamSchedule es = new ExamSchedule();
+//					es.setVisible(true);
+//				}
+//				catch (Exception ex) {
+//					ex.printStackTrace();
 //				}
 //			}
 //		});
+		contentPane.add(btnShowFinalsSchedule);
 		
-		JComboBox<Course> courseSelect3 = new JComboBox<Course>();
-		for (int i = 0; i < coursesOffered.size(); i++) {
-			courseSelect3.addItem(coursesOffered.get(i));
-		}
-		coursesSelected.add((Course) courseSelect3.getSelectedItem());
+		btnBack = new JButton("Back");
+		btnBack.setBounds(6, 393, 117, 29);
+		contentPane.add(btnBack);
 		
-		JButton getFinalsSchedule = new JButton("Show Final Exam Schedule");
-		// Add ActionListener to get finals schedule
-		//ActionListener to create a finals schedule panel
-		getFinalsSchedule.addActionListener(new ActionListener() {
-			//action performed when next is pushed
+		addButton = new JButton(">>");
+		addButton.setBounds(177, 166, 61, 22);
+		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
-				try {
-					//this needs to be redone to reflect a weekly schedule.
-					//the schedule class is here as a placeholder until we write child classes
-					Schedule examSchedule = new Schedule(coursesSelected);
-					examSchedule.setVisible(true);
-				} catch (Exception ex) {
-					ex.printStackTrace();
+				List<Course> l = courseList.getSelectedValuesList();
+				Course selected = l.get(0);
+				String days = new String(selected.getDays());
+				boolean flag = true;
+				
+				for (int i = 0; i < days.length(); i++) {
+					if (!(calendar.getValueAt(timeToInt(selected.getTimeStart()), intDays(days.charAt(i))) == "")) {
+						flag = false;
+					}
 				}
-			}
-			}
-		);
-		JButton back = new JButton ("Back");
-		back.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-				try { 
-				//took this out to keep the courses when going back
-					//might make a clear button
-				//coursesSelected.clear();	
-				ChooseMajor majorChoice = new ChooseMajor();
-				majorChoice.setVisible(true);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
+				
+				if (isMajorCourse(selected) == true && flag == true) {
+					addCalendarElements(selected, timeToInt(selected.getTimeStart()), selected.getDays());
+					clearCourseSelected();
+				}
+				else if (isMajorCourse(selected) == false && flag == true) {
+					addCalendarElements(selected, timeToInt(selected.getTimeStart()), selected.getDays());
+					errorBar.setText("Note: " + selected.getCourseCode().substring(0, 7) + " does not fulfill any "
+							+ "major requirements ");
+					errorBar.setBackground(Color.YELLOW);
+					clearCourseSelected();
+				}
+				else if (flag == false) {
+					errorBar.setBackground(Color.red);
+					errorBar.setText("Unable to add " + selected.getCourseCode().substring(0, 7) + " conflicts"
+							+ "with a previously selected course");
+				}
+				
+				
+				
+				
 			}});
-	
-		contentPane.add(courseSelect1);
-		contentPane.add(courseSelect2);
-		contentPane.add(courseSelect3);
-		contentPane.add(getFinalsSchedule);
-		contentPane.add(back);
 		
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new GridLayout(0, 1, 0, 0));
-		setContentPane(contentPane);
+		contentPane.add(addButton);
+		
+		removeButton = new JButton("<<");
+		removeButton.setBounds(177, 200, 61, 22);
+		contentPane.add(removeButton);
+		removeButton.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				int row = calendar.getSelectedRow();
+				int col = calendar.getSelectedColumn();
+				
+				if (calendar.getValueAt(row, col).equals("")) {
+					
+				}
+				
+				else {
+				Object o = calendar.getValueAt(row, col);
+				
+				isMissing(courseListModel, o);
+				clearCalendarSelection(o);
+				}
+			}
+		});
+		
+		lblWeeklySchedule = new JLabel("Weekly Schedule");
+		lblWeeklySchedule.setBounds(397, 51, 117, 16);
+		contentPane.add(lblWeeklySchedule);
+		
+		statusBar = new JTextField();
+		statusBar.setEditable(false);
+		statusBar.setBounds(250, 312, 400, 29);
+		
+		errorBar = new JTextField();
+		errorBar.setEditable(false);
+		errorBar.setBounds(250, 341, 400, 29);
+		
+		courseList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged (ListSelectionEvent e) {
+				Course c = courseList.getSelectedValue();
+				
+				if (c == null) {
+					statusBar.setText("");
+				}
+				
+				else
+					statusBar.setText(c.toString());
+				
+			}
+		});
+		
+		contentPane.add(statusBar);
+		contentPane.add(errorBar);
 	}
 	
-	public static void loadCoursesOffered () {
+	public void isMissing (DefaultListModel<Course> model, Object o) {
+		Course c = null; 
+		String genericName = o.toString().substring(0, 9).trim();
 		
-		Scanner in = null;
+		for (int i = 0; i < coursesAvailable.size(); i++) {
+			if (coursesAvailable.get(i).getCourseCode().equals(genericName)) {
+				c = coursesAvailable.get(i);
+			}
+		}
 		
-		try {
-			in = new Scanner(new File("CoursesOffered.txt"));
-			coursesOffered.clear();
+		model.addElement(c);
+		
+	}
+	
+	public Course[] toCourseArray (List<Course> l) {
+		Course[] c = new Course[l.size()];
+		
+		for (int i = 0; i < c.length; i++) {
+			c[i] = l.get(i);
+		}
+		
+		return c;
+	}
+	
+	public boolean isMajorCourse(Course c) {
+		Course d = new Course(c.getCourseCode().substring(0, 7));
+		boolean is = false;
+		for (int i = 0; i < majorCourses.size(); i++) {
+			if (d.toString().substring(0, 7).equals(majorCourses.get(i).toString().substring(0, 7))) {
+				is = true;
+			}
+		}
+		return is;
+		
+	}
+	
+	public void clearCourseListModel() {
+		courseListModel.clear();
+	}
+	
+	public void addCourseElements (ListModel<Course> obj) {
+		fillListModel (courseListModel, obj);
+	}
+	
+	public void addCourseElements (Course c) {
+		fillListModel(courseListModel, c);
+	}
+	
+	public void addCalendarElements (ListModel<Course> obj, int time, char[] days) {
+		String stringDays = new String(days);
+		
+		if (days.length == 1) {
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(0)));
+		}
+		if (days.length == 2) {
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(0)));
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(1)));
 			
-			while (in.hasNext()) {
-				String[] info = in.nextLine().split("\t");
-				coursesOffered.add(
-						new Course(info[0], info[1], Integer.parseInt(info[2]), 
-								Integer.parseInt(info[3]), info[4], info[5]));
-			}
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
+		}
+		if (days.length == 3) {
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(0)));
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(1)));
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(2)));
+		}
+		
+		if (days.length == 4) {
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(0)));
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(1)));
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(2)));
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(3)));
+		}
+		if (days.length == 5) {
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(0)));
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(1)));
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(2)));
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(3)));
+			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(4)));
+		}
+		
+		
+	}
+	
+	public void addCalendarElements (Course obj, int time, char[] days) {
+		String stringDays = new String(days);
+		
+		if (days.length == 1) {
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(0)));
+		}
+		if (days.length == 2) {
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(0)));
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(1)));
 			
 		}
-		finally {
-			if (in != null) in.close();
+		if (days.length == 3) {
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(0)));
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(1)));
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(2)));
 		}
+		
+		if (days.length == 4) {
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(0)));
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(1)));
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(2)));
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(3)));
+		}
+		if (days.length == 5) {
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(0)));
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(1)));
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(2)));
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(3)));
+			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(4)));
+		}
+
+		
+		
 	}
 	
-	public static void printCourses() {
-		for (Course c : coursesOffered) {
-			System.out.println(c);
-		}
-	}
-	
-	public boolean checkConflicts(Course a, Course b) {
-		boolean flag = false;
-		char[] dayConflicts = dayConflicts(a, b);
+
+	public void clearCalendarSelection(Object o) {
+		String genName = o.toString();
+		int rowCount = calendar.getRowCount();
+		int colCount = calendar.getColumnCount();
 		
-		
-			if (noConflicts(dayConflicts) == true) {
-				flag = true;
-			}
-			if (noConflicts(dayConflicts) == false) {
-				if (a.getTimeEnd() < b.getTimeStart() ||
-						(a.getTimeStart() > b.getTimeEnd())) {
-				flag = true;
-			}
-		
-		}
-		return flag;
-	}
-	
-	public char[] dayConflicts(Course a, Course b) {
-		char[] aDays = a.getDays();
-		char[] bDays = b.getDays();
-		ArrayList<Character> conflicts = new ArrayList<Character>();
-		
-		for (int i = 0; i < aDays.length; i++) {
-			for (int j = 0; j < bDays.length; j++) {
-				if(aDays[i] == bDays[j]) {
-					conflicts.add(aDays[i]);
+		for (int i = 0; i < rowCount; i++) {
+			for (int j = 0; j < colCount; j++) {
+				if (!calendar.getValueAt(i, j).toString().equals("")) {
+					if (calendar.getValueAt(i, j).toString().equals(genName)) {
+						calendar.setValueAt("", i, j);
+					}
 				}
 			}
 		}
-		char[] dayConflicts = new char[conflicts.size()];
-		for (int i = 0; i < dayConflicts.length; i++) {
-			dayConflicts[i] = conflicts.get(i);
-		}
-		return dayConflicts;
 	}
 	
-	public boolean noConflicts (char[] arr) {
-		if (arr.length == 0) {
-			return true;
+	private void fillListModel (DefaultListModel<Course> model, ListModel<Course> obj) {
+		int size = obj.getSize();
+		
+		for (int i = 0; i < size; i++) {
+			model.addElement(obj.getElementAt(i));
+		}
+	}
+	
+	private void fillListModel (DefaultListModel<Course> model, Course c) {
+			model.addElement(c);
+		
+	}
+	private void clearCourseSelected () {
+		List<Course> l = courseList.getSelectedValuesList();
+		Course selected = l.get(0);
+		
+		int index = courseListModel.indexOf(selected);
+		courseListModel.removeElementAt(index);
+		courseList.getSelectionModel().clearSelection();
+	}
+	
+	public void setCourseElements(ListModel<Course> obj) {
+		clearCourseListModel();
+		addCourseElements(obj);
+	}
+	
+	public int timeToInt (int time) {
+		if (time > 1259) {
+			return (time - 1200) / 100;
 		}
 		else
-			return false;
+			return time/100;
 	}
+	
+	public int intDays (char day) {
+		if (day == 'M') {
+			return 1;
+		}
+		if (day == 'T') {
+			return 2;
+		}
+		if (day == 'W') {
+			return 3;
+		}
+		if (day == 'R') {
+			return 4;
+		}
+		if (day == 'F') {
+			return 5;
+		}
+		else
+			return 0;
+	
+	}
+	
+	
+	
+	public int timeToCalendar(int n) {
+		int calendarSlot = 0;
+		if (n == 8) {
+			calendarSlot = 0;
+		}
+		if (n == 9) {
+			calendarSlot = 1;
+		}
+		if (n == 10) {
+			calendarSlot = 2;
+		}
+		if (n == 11) {
+			calendarSlot = 3;
+		}
+		if (n == 12) {
+			calendarSlot = 4;
+		}
+		if (n == 1) {
+			calendarSlot = 5;
+		}
+		if (n == 2) {
+			calendarSlot = 6;
+		}
+		if (n == 3) {
+			calendarSlot = 7;
+		}
+		if (n == 4) {
+			calendarSlot = 8;
+		}
+		if (n == 5) {
+			calendarSlot = 9;
+		}
+		if (n == 6) {
+			calendarSlot = 10;
+		}
+		if (n == 7) {
+			calendarSlot = 11;
+		}
+		
+		return calendarSlot;
 
+	}
 }

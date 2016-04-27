@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
 
 public class ChooseUser extends JFrame {
 
@@ -30,28 +31,50 @@ public class ChooseUser extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new GridLayout(0, 1, 0, 0));
-		JButton student = new JButton("Student");
-		JButton administrator = new JButton("Administrator");
-		contentPane.add(student);
-		student.addActionListener(new ActionListener() {
+		contentPane.setLayout(null);
+		
+		setContentPane(contentPane);
+		
+		JButton btnStudent = new JButton("Student");
+		btnStudent.setBounds(170, 123, 117, 29);
+		btnStudent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				ChooseMajor major = new ChooseMajor();
-				major.setVisible(true);
+				EnterClasses ec = new EnterClasses();
+				ec.setVisible(true);
+			}
+		});
+		
+		
+		contentPane.add(btnStudent);
+		
+		JButton btnAdministrator = new JButton("Administrator");
+		btnAdministrator.setBounds(170, 151, 117, 29);
+		contentPane.add(btnAdministrator);
+		btnAdministrator.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				dispose();
+				AdminPassword ap = new AdminPassword();
+				ap.setVisible(true);
+			}
+		});
+		
+		JLabel lblChooseAUser = new JLabel("<html>Choose a user. Student to optimize course scheduling,<br> administrator to"
+				+ " update course information.");
+		lblChooseAUser.setBounds(69, 74, 351, 37);
+		contentPane.add(lblChooseAUser);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.setBounds(6, 243, 117, 29);
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				OpeningScreen os = new OpeningScreen();
+				os.setVisible(true);	
 				
 			}
 		});
-		administrator.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-				AdminPassword pass = new AdminPassword();
-				pass.setVisible(true);
-			}
-		});
-		contentPane.add(administrator);
-		setContentPane(contentPane);
+		contentPane.add(btnBack);
 	}
 
 }

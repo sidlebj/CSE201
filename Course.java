@@ -61,8 +61,7 @@ public class Course implements Comparable{
 	
 	@Override
 	public String toString() {
-		return courseCode + "\t\t" +  timeToString()
-			+ "\t\t" + daysToString() + "\t\t" + preReqsToString();
+		return courseCode + " Time";
 	}
 	
 	public String daysToString() {
@@ -153,7 +152,6 @@ public class Course implements Comparable{
 	public void setTimeEnd(int timeEnd) {
 		this.timeEnd = timeEnd;
 	}
-
 
 	public String[] getPreRequisites() {
 		return preRequisites;

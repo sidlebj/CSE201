@@ -89,7 +89,7 @@ public class GetInfo extends JFrame {
 							seniorStanding = false;
 						}
 						dispose();
-						Tester3 ce = new Tester3();
+						CourseEntry ce = new CourseEntry();
 						ce.setVisible(true);
 				
 					} catch (Exception x) {
