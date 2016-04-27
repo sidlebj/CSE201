@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -10,17 +11,18 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 //this class serves as a template for our weekly schedule and exam schedule classes
 public class ExamSchedule extends JFrame{
 
-	
 	private JPanel contentPane;
 	private String[] columnNames = {"Time", "M", "T", "W", "R", "F"};
-	String[][] data = { {"8", "", "", "", "", ""}, 
-			{"9", "","", "", "", ""},
-			{"10", "","", "", "", ""},
+	String[][] data = { {"8", "", "", "", "", "CSE 102"}, 
+			{"9", "","", "", "", "CSE 102"},
+			{"10", "","", "CONFLICT", "", ""},
 			{"11", "","", "", "", ""},
 			{"12", "","", "", "", ""},
 			{"1", "","", "", "", ""},
@@ -79,6 +81,21 @@ public class ExamSchedule extends JFrame{
 		c.gridy = 2;
 		contentPane.add(examTable, c);
 		
+		//Create the error bar
+		JTextField errorbar = new JTextField();
+		Color noGo = new Color(200, 0, 0);
+		errorbar.setBackground(noGo);
+		errorbar.setForeground(Color.lightGray);
+		errorbar.setText("ERROR: CSE 148 and CSE 256 CONFLICT -- 10:15 W");
+		c.ipadx = 0;
+		c.insets = new Insets(10, 0, 0, 0);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 1;
+		c.gridy = 3;
+		c.anchor = GridBagConstraints.CENTER;
+		c.gridwidth = 2;
+		contentPane.add(errorbar, c);
+		
 		//Create Back button
 		JButton back = new JButton("Back");
 		back.addActionListener(new ActionListener() {
@@ -89,11 +106,10 @@ public class ExamSchedule extends JFrame{
 			}
 		});
 
-		c.ipadx = 0;
 		c.insets = new Insets(10, 0, 0, 0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = 4;
 		c.anchor = GridBagConstraints.SOUTHWEST;
 		c.gridwidth = 1;
 		contentPane.add(back, c);
@@ -102,7 +118,7 @@ public class ExamSchedule extends JFrame{
 		JLabel blank = new JLabel();
 
 	    c.gridx = 1;
-	    c.gridy = 3;
+	    c.gridy = 4;
 	    c.gridheight = 1;
 	    c.gridwidth = 1;
 	    c.weightx = 1.0;
@@ -126,7 +142,7 @@ public class ExamSchedule extends JFrame{
 		//c.ipadx = 30;  
 		//c.ipady = 10;  
 		c.gridx = 2;
-		c.gridy = 3;
+		c.gridy = 4;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.LAST_LINE_END;
 		c.gridwidth = 1;
@@ -171,3 +187,5 @@ public class ExamSchedule extends JFrame{
 	}
 	
 }
+
+
