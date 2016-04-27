@@ -1,17 +1,4 @@
 import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListModel;
-import javax.swing.JList;
 
 
 public class EnterClasses extends JFrame {
@@ -32,7 +19,7 @@ public class EnterClasses extends JFrame {
 	private JLabel description;
 	private Course[] prerequisites;
 	
-	public ArrayList<Course> classesTaken = new ArrayList<Course>();
+	public static ArrayList<Course> classesTaken = new ArrayList<Course>();
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -188,11 +175,11 @@ public class EnterClasses extends JFrame {
 		fillListModel (courseListModel, obj);
 	}
 	
-	public void addCourseElements (Object[] objs) {
+	public void addCourseElements (Object objs) {
 		fillListModel(courseListModel, objs);
 	}
 	
-	public void addSelectionElements (Object[] objs) {
+	public void addSelectionElements (Object objs) {
 		fillListModel(selectionsListModel, objs);
 	}
 	
@@ -208,20 +195,16 @@ public class EnterClasses extends JFrame {
 		}
 	}
 	
-	private void fillListModel (DefaultListModel model, Object[] obj) {
-		for (int i = 0; i < obj.length; i++) {
-			model.addElement(obj[i]);
-		}
+	private void fillListModel (DefaultListModel model, Object obj) {
+		model.addElement(obj);
 	}
 	
 	private void clearCourseSelected () {
 		List l = courseList.getSelectedValuesList();
-		Object[] selected = l.toArray();
+		Object o = l.get(0);
 		
-		for (int i = 0; i < selected.length; i++) {
-			courseListModel.removeElementAt(i);
-		}
-		
+		int index = courseListModel.indexOf(o);
+		courseListModel.removeElementAt(index);
 		courseList.getSelectionModel().clearSelection();
 	}
 	
@@ -244,7 +227,7 @@ public class EnterClasses extends JFrame {
 	private class AddButtonListener implements ActionListener {
 		public void actionPerformed (ActionEvent e) {
 			List l = courseList.getSelectedValuesList();
-			Object[] selected = l.toArray();
+			Object selected = l.get(0);
 			
 			addSelectionElements(selected);
 			clearCourseSelected();
@@ -255,7 +238,7 @@ public class EnterClasses extends JFrame {
 	private class RemoveButtonListener implements ActionListener {
 		public void actionPerformed (ActionEvent e) {
 			List l = selectionsList.getSelectedValuesList();
-			Object[] selected = l.toArray();
+			Object selected = l.get(0);
 			
 			addCourseElements(selected);
 			clearSelectionSelected();
@@ -283,3 +266,5 @@ public class EnterClasses extends JFrame {
 	
 	
 }
+
+
