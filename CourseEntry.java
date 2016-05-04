@@ -22,7 +22,8 @@ import javax.swing.JTextField;
 public class CourseEntry extends JFrame {
 	public ArrayList<Course> coursesAvailable = new ArrayList<Course>();
 	public ArrayList<Course> majorCourses = new ArrayList<Course>();
-
+	private ArrayList<Course> tempCourses = new ArrayList<Course>();
+	
 	private JPanel contentPane;
 	private DefaultTableModel model;
 	private JTable calendar;
@@ -57,7 +58,7 @@ public class CourseEntry extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Tester3 frame = new Tester3();
+					CourseEntry frame = new CourseEntry();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -77,16 +78,18 @@ public class CourseEntry extends JFrame {
 		calendar.setModel(model);
 		coursesAvailable = new ArrayList<Course>();
 	
-		Course a = new Course("CSE 174 A", "James Kiper", 800, 925, new char[]{'M', 'W', 'F'}, 
-				new String[]{"None"});
+		Course a = new Course("CSE 174 A", "James Kiper", new MeetTimes[]{new MeetTimes('M', 1000, 1055), 
+				new MeetTimes('W', 1000, 1055), new MeetTimes('R', 800, 950)}, new MeetTimes('W', 1500, 1700),
+						new String[]{"None"});
 		coursesAvailable.add(a);
-		Course b = new Course("CSE 271 B", "Michael Stahr", 1300, 1450, new char[]{'T', 'R'},
-				new String[]{"CSE 174"});
+		Course b = new Course("CSE 271 B", "Michael Stahr", new MeetTimes[]{new MeetTimes('T', 1130, 1250), 
+				new MeetTimes('R', 1130, 1250)}, new MeetTimes('M', 1500, 1700),new String[]{"CSE 174"});
 		coursesAvailable.add(b);
-		Course c = new Course("CSE 274 C", "Prakash Duraisamy", 1300, 1450, new char[]{'T', 'F'},
-				new String[]{"CSE 271"});
+		Course c = new Course("CSE 274 C", "Prakash Duraisamy", new MeetTimes[]{new MeetTimes('T', 1130, 1250),
+				new MeetTimes('R', 1130, 1250)}, new MeetTimes('W', 1500, 1700), new String[]{"CSE 271"});
 		coursesAvailable.add(c);
-		Course d = new Course("CSE 148 D", "Someone Irrelevant", 1000, 1200, new char[]{'M', 'W', 'F'},
+		Course d = new Course("CSE 148 D", "Someone Irrelevant",new MeetTimes[]{new MeetTimes('M', 1000, 1055), 
+				new MeetTimes('W', 1000, 1055), new MeetTimes('F', 1000, 1055)}, new MeetTimes('F', 800, 1000),
 				new String[]{"None"});
 		coursesAvailable.add(d);
 		
@@ -117,58 +120,56 @@ public class CourseEntry extends JFrame {
 		
 		btnShowFinalsSchedule = new JButton("Show Finals Schedule");
 		btnShowFinalsSchedule.setBounds(491, 393, 178, 29);
-//		btnShowFinalsSchedule.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				try {
-//					dispose();
-//					ExamSchedule es = new ExamSchedule();
-//					es.setVisible(true);
-//				}
-//				catch (Exception ex) {
-//					ex.printStackTrace();
-//				}
-//			}
-//		});
+		btnShowFinalsSchedule.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					dispose();
+					ExamSchedule es = new ExamSchedule();
+					es.setVisible(true);
+				}
+				catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
 		contentPane.add(btnShowFinalsSchedule);
 		
 		btnBack = new JButton("Back");
 		btnBack.setBounds(6, 393, 117, 29);
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					dispose();
+					GetInfo gi = new GetInfo();
+					gi.setVisible(true);
+				}
+				catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
 		contentPane.add(btnBack);
 		
 		addButton = new JButton(">>");
 		addButton.setBounds(177, 166, 61, 22);
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<Course> l = courseList.getSelectedValuesList();
-				Course selected = l.get(0);
-				String days = new String(selected.getDays());
-				boolean flag = true;
+				List l = courseList.getSelectedValuesList();
+				Course selected = (Course)l.get(0);
 				
-				for (int i = 0; i < days.length(); i++) {
-					if (!(calendar.getValueAt(timeToInt(selected.getTimeStart()), intDays(days.charAt(i))) == "")) {
-						flag = false;
-					}
+				
+				if (alreadySelected(selected)) {
+					JOptionPane.showMessageDialog(contentPane, "Cannot add, this course has already been added");
 				}
-				
-				if (isMajorCourse(selected) == true && flag == true) {
-					addCalendarElements(selected, timeToInt(selected.getTimeStart()), selected.getDays());
-					clearCourseSelected();
+				else if (conflicts(selected)) {
+					JOptionPane.showMessageDialog(contentPane, "Cannot add " + selected.getCourseCode() + ", it"
+							+ " conflicts with a course currently selected");
 				}
-				else if (isMajorCourse(selected) == false && flag == true) {
-					addCalendarElements(selected, timeToInt(selected.getTimeStart()), selected.getDays());
-					errorBar.setText("Note: " + selected.getCourseCode().substring(0, 7) + " does not fulfill any "
-							+ "major requirements ");
-					errorBar.setBackground(Color.YELLOW);
-					clearCourseSelected();
-				}
-				else if (flag == false) {
-					errorBar.setBackground(Color.red);
-					errorBar.setText("Unable to add " + selected.getCourseCode().substring(0, 7) + " conflicts"
-							+ "with a previously selected course");
-				}
-				
-				
-				
+				else {
+					tempCourses.add(selected);
+					addCalendarElements(selected);
+					
+				}	
 				
 			}});
 		
@@ -189,8 +190,10 @@ public class CourseEntry extends JFrame {
 				else {
 				Object o = calendar.getValueAt(row, col);
 				
-				isMissing(courseListModel, o);
+				removeFromList(o);
+				
 				clearCalendarSelection(o);
+				
 				}
 			}
 		});
@@ -216,7 +219,7 @@ public class CourseEntry extends JFrame {
 				}
 				
 				else
-					statusBar.setText(c.toString());
+					statusBar.setText(c.importantInfo());
 				
 			}
 		});
@@ -261,6 +264,50 @@ public class CourseEntry extends JFrame {
 		
 	}
 	
+	public boolean conflicts (Course c) {
+		boolean flag = false; 
+		
+		if (tempCourses.isEmpty()) {
+			flag = false;
+		}
+		else {
+			for (int i = 0; i < tempCourses.size(); i++) {
+				if (c.conflictsWith(tempCourses.get(i))) {
+					flag = true;
+					break;
+				}
+			}
+		}
+		return flag;
+	}
+	
+	public boolean alreadySelected (Course c) {
+		boolean flag = false;
+		if (tempCourses.isEmpty()) {
+			flag = false;
+		}
+		else {
+			for (int i = 0; i < tempCourses.size(); i++) {
+				if (c.getCourseCode().equals(tempCourses.get(i).getCourseCode())) {
+					flag = true;
+					break;
+				}
+			}
+		}
+		return flag;
+		
+	}
+	
+	public void removeFromList (Object o) {
+		Course c = new Course(o.toString());
+		
+		for (int i = 0; i < tempCourses.size(); i++) {
+			if (c.getCourseCode().equals(tempCourses.get(i).getCourseCode())) {
+				tempCourses.remove(i);
+			}
+		}
+	}
+	
 	public void clearCourseListModel() {
 		courseListModel.clear();
 	}
@@ -273,74 +320,22 @@ public class CourseEntry extends JFrame {
 		fillListModel(courseListModel, c);
 	}
 	
-	public void addCalendarElements (ListModel<Course> obj, int time, char[] days) {
-		String stringDays = new String(days);
+	public void addCalendarElements (Course c) {
+		MeetTimes[] courseTimes = c.getCourseTimes();
 		
-		if (days.length == 1) {
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(0)));
-		}
-		if (days.length == 2) {
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(0)));
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(1)));
-			
-		}
-		if (days.length == 3) {
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(0)));
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(1)));
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(2)));
+		for (int i = 0; i  < courseTimes.length; i++) {
+			calendar.getModel().setValueAt(c.getCourseCode(), timeToInt(courseTimes[i].getStartTime()),
+					intDays(courseTimes[i].getDay()));
 		}
 		
-		if (days.length == 4) {
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(0)));
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(1)));
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(2)));
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(3)));
+		for (int i = 0; i  < courseTimes.length; i++) {
+			calendar.getModel().setValueAt(c.getCourseCode(), timeToInt(courseTimes[i].getEndTime()),
+					intDays(courseTimes[i].getDay()));
 		}
-		if (days.length == 5) {
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(0)));
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(1)));
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(2)));
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(3)));
-			calendar.getModel().setValueAt(obj.toString(), time, intDays(stringDays.charAt(4)));
-		}
-		
-		
 	}
-	
-	public void addCalendarElements (Course obj, int time, char[] days) {
-		String stringDays = new String(days);
-		
-		if (days.length == 1) {
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(0)));
-		}
-		if (days.length == 2) {
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(0)));
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(1)));
-			
-		}
-		if (days.length == 3) {
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(0)));
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(1)));
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(2)));
-		}
-		
-		if (days.length == 4) {
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(0)));
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(1)));
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(2)));
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(3)));
-		}
-		if (days.length == 5) {
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(0)));
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(1)));
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(2)));
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(3)));
-			calendar.getModel().setValueAt(obj.toString(), timeToCalendar(time), intDays(stringDays.charAt(4)));
-		}
 
 		
-		
-	}
+	
 	
 
 	public void clearCalendarSelection(Object o) {
@@ -371,14 +366,6 @@ public class CourseEntry extends JFrame {
 			model.addElement(c);
 		
 	}
-	private void clearCourseSelected () {
-		List<Course> l = courseList.getSelectedValuesList();
-		Course selected = l.get(0);
-		
-		int index = courseListModel.indexOf(selected);
-		courseListModel.removeElementAt(index);
-		courseList.getSelectionModel().clearSelection();
-	}
 	
 	public void setCourseElements(ListModel<Course> obj) {
 		clearCourseListModel();
@@ -386,11 +373,56 @@ public class CourseEntry extends JFrame {
 	}
 	
 	public int timeToInt (int time) {
+		int newTime;
+		
 		if (time > 1259) {
-			return (time - 1200) / 100;
+			newTime = (time - 1200) / 100;
 		}
 		else
-			return time/100;
+			newTime = time/100;
+		
+		int calendarSlot = 0;
+		
+		if (newTime == 8) {
+			calendarSlot = 0;
+		}
+		if (newTime == 9) {
+			calendarSlot = 1;
+		}
+		if (newTime == 10) {
+			calendarSlot = 2;
+		}
+		if (newTime == 11) {
+			calendarSlot = 3;
+		}
+		if (newTime == 12) {
+			calendarSlot = 4;
+		}
+		if (newTime == 1) {
+			calendarSlot = 5;
+		}
+		if (newTime == 2) {
+			calendarSlot = 6;
+		}
+		if (newTime == 3) {
+			calendarSlot = 7;
+		}
+		if (newTime == 4) {
+			calendarSlot = 8;
+		}
+		if (newTime == 5) {
+			calendarSlot = 9;
+		}
+		if (newTime == 6) {
+			calendarSlot = 10;
+		}
+		if (newTime == 7) {
+			calendarSlot = 11;
+		}
+		
+		return calendarSlot;
+		
+		
 	}
 	
 	public int intDays (char day) {
@@ -414,48 +446,4 @@ public class CourseEntry extends JFrame {
 	
 	}
 	
-	
-	
-	public int timeToCalendar(int n) {
-		int calendarSlot = 0;
-		if (n == 8) {
-			calendarSlot = 0;
-		}
-		if (n == 9) {
-			calendarSlot = 1;
-		}
-		if (n == 10) {
-			calendarSlot = 2;
-		}
-		if (n == 11) {
-			calendarSlot = 3;
-		}
-		if (n == 12) {
-			calendarSlot = 4;
-		}
-		if (n == 1) {
-			calendarSlot = 5;
-		}
-		if (n == 2) {
-			calendarSlot = 6;
-		}
-		if (n == 3) {
-			calendarSlot = 7;
-		}
-		if (n == 4) {
-			calendarSlot = 8;
-		}
-		if (n == 5) {
-			calendarSlot = 9;
-		}
-		if (n == 6) {
-			calendarSlot = 10;
-		}
-		if (n == 7) {
-			calendarSlot = 11;
-		}
-		
-		return calendarSlot;
-
-	}
 }
