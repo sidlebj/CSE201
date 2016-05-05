@@ -19,6 +19,7 @@ import java.util.Scanner;
 public class ChooseMajor extends JFrame {
 	public static ArrayList<Course> csMajorCourses = new ArrayList<Course>();
 	public static ArrayList<Course> seMajorCourses = new ArrayList<Course>();
+	public static String major;
 	
 	private JPanel contentPane;
 	
@@ -53,6 +54,7 @@ public class ChooseMajor extends JFrame {
 				try {
 					dispose();
 					loadCSMajorRequirements();
+					major = "ComputerScience";
 					EnterClasses enter = new EnterClasses();
 					enter.setVisible(true);
 				}
@@ -64,9 +66,10 @@ public class ChooseMajor extends JFrame {
 		
 		se.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try { 
+				try {
 				dispose();	
 				loadSEMajorRequirements();
+				major = "SoftwareEngineering";
 				EnterClasses enter = new EnterClasses();
 				enter.setVisible(true);
 				}
@@ -134,6 +137,3 @@ public class ChooseMajor extends JFrame {
 			
 		}
 }
-	
-
-

@@ -47,11 +47,17 @@ public class EnterClasses extends JFrame {
 		});
 	}
 
-	public EnterClasses() {
+	public EnterClasses() {		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel(null);
-		initializePrerequisites();
+		if (ChooseMajor.major == "ComputerScience") {
+			initializePrerequisitesAsCS();
+		} else if (ChooseMajor.major == "SoftwareEngineering"){
+			initializePrerequisitesAsSE();
+		} else {
+			initializePrerequisitesAsFailure();
+		}
 		
 		courseListModel = new DefaultListModel();
 		for (int i = 0; i < prerequisites.length; i++) {
@@ -64,7 +70,7 @@ public class EnterClasses extends JFrame {
 		
 		selectionsPane = new JScrollPane(selectionsList);
 		selectionsPane.setBounds(285, 30, 135, 180);
-	
+		
 		contentPane.add(selectionsPane);
 		
 		addButton = new JButton(">>");
@@ -132,11 +138,9 @@ public class EnterClasses extends JFrame {
 		
 	}
 	
-	public void initializePrerequisites() {
+	public void initializePrerequisitesAsCS() {
 		ArrayList<Course> temp = new ArrayList<Course>();
-		temp.add(new Course("CSE 102"));
 		temp.add(new Course("CSE 153"));
-		temp.add(new Course("CSE 163"));
 		temp.add(new Course("CSE 174"));
 		temp.add(new Course("CSE 201"));
 		temp.add(new Course("CSE 271"));
@@ -147,22 +151,56 @@ public class EnterClasses extends JFrame {
 		temp.add(new Course("CSE 385"));
 		temp.add(new Course("CSE 386"));
 		temp.add(new Course("CSE 448"));
-		temp.add(new Course("CSE 606"));
+		temp.add(new Course("MTH 102"));
 		temp.add(new Course("MTH 151"));
 		temp.add(new Course("MTH 222"));
 		temp.add(new Course("MTH 231"));
-		temp.add(new Course("MTH 245"));
 		temp.add(new Course("MTH 251"));
-		temp.add(new Course("MTH 347"));
-		temp.add(new Course("ECE 278"));
 		temp.add(new Course("ECE 287"));
+		temp.add(new Course("ECE 289"));
+		temp.add(new Course("ECE 345"));
 		temp.add(new Course("ECE 387"));
+		temp.add(new Course("STA 301"));
 		temp.add(new Course("STA 368"));
 		temp.add(new Course("STA 401"));
-		temp.add(new Course("STA 462"));
-		temp.add(new Course("BOT 116"));
-		temp.add(new Course("BOT 342"));
 		temp.add(new Course("ENG 111"));
+		
+		prerequisites = new Course[temp.size()];
+		for (int i = 0; i < prerequisites.length; i++) {
+			prerequisites[i] = new Course(temp.get(i).toString());
+		}
+		
+	}
+	
+	public void initializePrerequisitesAsSE() {
+		ArrayList<Course> temp = new ArrayList<Course>();
+		temp.add(new Course("CSE 153"));
+		temp.add(new Course("CSE 174"));
+		temp.add(new Course("CSE 201"));
+		temp.add(new Course("CSE 271"));
+		temp.add(new Course("CSE 274"));
+		temp.add(new Course("CSE 278"));
+		temp.add(new Course("MTH 102"));
+		temp.add(new Course("MTH 222"));
+		temp.add(new Course("MTH 231"));
+		temp.add(new Course("MTH 251"));
+		temp.add(new Course("ECE 287"));
+		temp.add(new Course("ECE 289"));
+		temp.add(new Course("ECE 387"));
+		temp.add(new Course("ENG 111"));
+		
+		prerequisites = new Course[temp.size()];
+		for (int i = 0; i < prerequisites.length; i++) {
+			prerequisites[i] = new Course(temp.get(i).toString());
+		}
+		
+		
+	}
+	
+	public void initializePrerequisitesAsFailure() {
+		ArrayList<Course> temp = new ArrayList<Course>();
+		temp.add(new Course("No valid major selected"));
+		
 		
 		prerequisites = new Course[temp.size()];
 		for (int i = 0; i < prerequisites.length; i++) {
