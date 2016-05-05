@@ -53,7 +53,6 @@ public class ChooseMajor extends JFrame {
 			public void actionPerformed(ActionEvent e)  {
 				try {
 					dispose();
-					loadCSMajorRequirements();
 					major = "ComputerScience";
 					EnterClasses enter = new EnterClasses();
 					enter.setVisible(true);
@@ -68,7 +67,6 @@ public class ChooseMajor extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 				dispose();	
-				loadSEMajorRequirements();
 				major = "SoftwareEngineering";
 				EnterClasses enter = new EnterClasses();
 				enter.setVisible(true);
@@ -100,40 +98,5 @@ public class ChooseMajor extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 	}
-	
-	public void loadCSMajorRequirements() {
-		Scanner in = null;
-		
-		try {
-			in = new Scanner(new File("CSMajorCourses.txt"));
-			while (in.hasNext()) {
-				 csMajorCourses.add(new Course(in.nextLine()));
-			} 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (in != null) {
-				in.close();
-			}
-		}
-			
-	}
-	
-	public void loadSEMajorRequirements() {
-		Scanner in = null;
-		
-		try {
-			in = new Scanner(new File("SEMajorCourses.txt"));
-			while (in.hasNext()) {
-				 seMajorCourses.add(new Course(in.nextLine()));
-			} 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (in != null) {
-				in.close();
-			}
-		}
-			
-		}
+
 }

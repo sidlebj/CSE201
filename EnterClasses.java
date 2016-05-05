@@ -128,7 +128,7 @@ public class EnterClasses extends JFrame {
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				dispose();
-				ChooseUser cu = new ChooseUser();
+				ChooseMajor cu = new ChooseMajor();
 				cu.setVisible(true);
 			}
 		});

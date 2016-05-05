@@ -40,7 +40,7 @@ public class ChooseUser extends JFrame {
 		btnStudent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				EnterClasses ec = new EnterClasses();
+				ChooseMajor ec = new ChooseMajor();
 				ec.setVisible(true);
 			}
 		});

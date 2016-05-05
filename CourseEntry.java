@@ -124,7 +124,7 @@ public class CourseEntry extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					dispose();
-					ExamSchedule es = new ExamSchedule();
+					ExamSchedule es = new ExamSchedule(tempCourses);
 					es.setVisible(true);
 				}
 				catch (Exception ex) {
