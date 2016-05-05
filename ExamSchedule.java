@@ -69,7 +69,7 @@ public class ExamSchedule extends JFrame{
 		
 		//Create a table that will hold our exams
 		
-		populateTable(coursesSelected);
+		populateTable();
 		c.ipadx = contentPane.getWidth();
 		c.gridx = 0;
 		c.gridy = 1;
@@ -130,7 +130,7 @@ public class ExamSchedule extends JFrame{
 	  		JButton save = new JButton("Save");
 	  		save.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-			  		exportTxt(courses);
+			  		exportTxt();
 					//this should save courses added to a .txt file
 					
 				}
@@ -174,7 +174,7 @@ public class ExamSchedule extends JFrame{
 	
 	
 	
-	public void populateTable(ArrayList<Course> courses){
+	public void populateTable(){
 		MeetTimes slot;
 		int time, column = -1, row = -1; 
 		char day;
@@ -230,7 +230,7 @@ public class ExamSchedule extends JFrame{
 		
 	}
 	
-	public void exportTxt(ArrayList<Course> ourCourses){
+	public void exportTxt(){
 
 
 
@@ -262,11 +262,11 @@ public class ExamSchedule extends JFrame{
 		FileWriter fw = new FileWriter(fc.getSelectedFile()+".csv");
 
 		fw.write("CRN,Course Name,Day,Start,End,Final Time\n");
-		System.out.println(ourCourses.size());
-		for(int i = 0; i<ourCourses.size(); i++){
+		System.out.println(courses.size());
+		for(int i = 0; i<courses.size(); i++){
 
 		//write to the file
-		        fw.write(ourCourses.get(i).toString());
+		        fw.write(courses.get(i).toString());
 		        fw.write("\n");
 		}
 		
