@@ -1,19 +1,27 @@
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.Component;
 import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
+
+
 
 public class OpeningScreen extends JFrame {
-
+	Image img;
 	private JPanel contentPane;
 
 	/**
@@ -38,7 +46,13 @@ public class OpeningScreen extends JFrame {
 	public OpeningScreen() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel(null);
+		contentPane = new JPanel(new BorderLayout());
+		
+		ImageIcon image = new ImageIcon("The_M.jpg");
+		JLabel label = new JLabel("", image, JLabel.CENTER);
+		contentPane.add( label, BorderLayout.NORTH );
+		
+		
 		JLabel open = new JLabel();
 		open.setText("<html> CSE 201 Group F:<br> This program allows a student user"
 				+ " to enter CSE courses they wish to take and checks them for time"
@@ -56,12 +70,12 @@ public class OpeningScreen extends JFrame {
 		});
 		
 		open.setSize(new Dimension(300, 200));
-		open.setLocation(75, -5);
+		//open.setLocation(75, -5);
 		
-		cont.setLocation(175, 190);
+		//cont.setLocation(175, 190);
 		cont.setSize(new Dimension(100, 20));
-		contentPane.add(open);
-		contentPane.add(cont);
+		contentPane.add(open, BorderLayout.CENTER);
+		contentPane.add(cont, BorderLayout.SOUTH);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 	}
