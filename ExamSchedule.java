@@ -117,7 +117,7 @@ public class ExamSchedule extends JFrame{
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				CourseEntry entry = new CourseEntry();
+				CourseEntry entry = new CourseEntry(courses);
 				entry.setVisible(true);
 			}
 		});

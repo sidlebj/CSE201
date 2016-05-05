@@ -115,7 +115,7 @@ public class EnterClasses extends JFrame {
 				
 				try {
 					dispose();
-					GetInfo gi = new GetInfo();
+					GetInfo gi = new GetInfo(classesTaken);
 					gi.setVisible(true);
 				} catch (Exception ex) {
 					ex.printStackTrace();

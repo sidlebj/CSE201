@@ -33,6 +33,7 @@ public class CourseEntry extends JFrame {
 	public ArrayList<Course> coursesAvailable = new ArrayList<Course>();
 	public ArrayList<Course> majorCourses = new ArrayList<Course>();
 	private ArrayList<Course> tempCourses = new ArrayList<Course>();
+	private ArrayList<Course> classesTaken = new ArrayList<Course>();
 	
 	private JPanel contentPane;
 	private DefaultTableModel model;
@@ -64,21 +65,12 @@ public class CourseEntry extends JFrame {
 			{"6", "","", "", "", ""},
 			{"7", "","", "", "", ""}};
 	private JLabel lblCrnCourseCode;
+
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					CourseEntry frame = new CourseEntry();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	
-	public CourseEntry() {
+	public CourseEntry(ArrayList<Course> classesTaken) {
+		
+		this.classesTaken = classesTaken;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 675, 450);
 		contentPane = new JPanel(null);
@@ -100,9 +92,13 @@ public class CourseEntry extends JFrame {
 			e.printStackTrace();
 		}
 		
+		//setPrereqs();
+		//editCoursesOffered();
+		
 		for (int i = 0; i < coursesAvailable.size(); i++) {
 			courseListModel.addElement(coursesAvailable.get(i));
 		}
+		
 		
 		courseList = new JList(courseListModel);
 
@@ -141,7 +137,7 @@ public class CourseEntry extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					dispose();
-					GetInfo gi = new GetInfo();
+					GetInfo gi = new GetInfo(classesTaken);
 					gi.setVisible(true);
 				}
 				catch (Exception ex) {
@@ -591,6 +587,83 @@ public class CourseEntry extends JFrame {
 		return doc;
 	}
 	
+	public void editCoursesOffered(){
+		
+		for(int i = 0; i<coursesAvailable.size(); i++){
+			
+			if(!checkPrerequisites(coursesAvailable.get(i))){
+				
+				coursesAvailable.remove(i);
+				
+			}
+			
+		}
+		
+	}
 	
+	public boolean checkPrerequisites(Course c){
+		
+		
+		String[] prerequisites = c.getPreRequisites();
+		
+		for(int i = 0; i < prerequisites.length; i++){
+		
+			for(int k = 0; k<classesTaken.size(); k++){
+				if(classesTaken.get(i).getCourseCode().equals(prerequisites[i])){
+					return true;
+				} 
+			}
+			
+		}
+		
+		return false;
+		
+	}
+	
+	public void setPrereqs(){
+		
+		Course c;
+		
+		for(int i = 0; i < coursesAvailable.size(); i++){
+			
+			c = coursesAvailable.get(i);
+			
+			if(c.getCourseCode().equals("CSE 201")){
+				c.setPreRequisites("CSE 271");
+			} else if (c.getCourseCode().equals("CSE 212")){
+				c.setPreRequisites(new String[] {"CSE 274","CSE 201"});
+			} else if (c.getCourseCode().equals("CSE 271")){
+				c.setPreRequisites("CSE 174");
+			}else if(c.getCourseCode().equals("CSE 274")){
+				c.setPreRequisites("CSE 271");
+			} else if (c.getCourseCode().equals("CSE 278")){
+				c.setPreRequisites("CSE 271");
+			}else if(c.getCourseCode().equals("CSE 283")){
+				c.setPreRequisites("CSE 271");
+			} else if (c.getCourseCode().equals("CSE 311")){
+				c.setPreRequisites("CSE 201");
+			} else if(c.getCourseCode().equals("CSE 321")){
+				c.setPreRequisites("CSE 201");
+			} else if (c.getCourseCode().equals("CSE 322")){
+				c.setPreRequisites("CSE 201");
+			}else if(c.getCourseCode().equals("CSE 381")){
+				c.setPreRequisites("CSE 274");
+			} else if (c.getCourseCode().equals("CSE 385")){
+				c.setPreRequisites("CSE 271");
+			}else if(c.getCourseCode().equals("CSE 448")){
+				c.setPreRequisites(new String[] {"CSE 201","CSE 274"});
+			} else if (c.getCourseCode().equals("CSE 449")){
+				c.setPreRequisites("CSE 448");
+			}else if(c.getCourseCode().equals("CSE 464")){
+				c.setPreRequisites("CSE 274");
+			} else if (c.getCourseCode().equals("CSE 465")){
+				c.setPreRequisites("CSE 274");
+			}else if (c.getCourseCode().equals("CSE 486")){
+				c.setPreRequisites("CSE 274");
+			}
+			
+		}
+		
+	}
 	
 }
