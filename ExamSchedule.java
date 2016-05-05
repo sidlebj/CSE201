@@ -4,6 +4,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
@@ -21,18 +23,30 @@ import javax.swing.table.AbstractTableModel;
 //this class serves as a template for our weekly schedule and exam schedule classes
 public class ExamSchedule extends JFrame{
 
+	private ArrayList<ArrayList<ArrayList<String>>> errors;
 	private ArrayList<Course> courses = new ArrayList<Course>();
+	private Color noGo = new Color(200, 0, 0);
+	private String statusText = "";
 	private JPanel contentPane;
 	private String[] columnNames = {"Time", "M", "T", "W", "R", "F"};
-	String[][] data = { {"8:00-10:00AM", "", "", "", "", ""}, 
+	private String[][] exams = { {"8:00-10:00AM", "", "", "", "", ""}, 
 			{"10:15AM-12:15PM", "","", "", "", ""},
 			{"12:45-2:45PM", "","", "", "", ""},
 			{"3:00-5:00PM", "","", "", "", ""},
 			{"5:30-7:30PM", "","", "", "", ""},
 			{"7:45-9:45PM", "","", "", "", ""}};
 	
+	private String[][] cellData = { {"", "", "", "", "", ""}, 
+			{"", "","", "", "", ""},
+			{"", "","", "", "", ""},
+			{"", "","", "", "", ""},
+			{"", "","", "", "", ""},
+			{"", "","", "", "", ""}};
+	
+	
+	
 	private GridBagConstraints c = new GridBagConstraints();
-	private JTable examTable = new JTable(data, columnNames);
+	private JTable examTable = new JTable(exams, columnNames);
 	
 	
 	public static void main(String[] args) {
@@ -44,6 +58,21 @@ public class ExamSchedule extends JFrame{
 	
 	public ExamSchedule (ArrayList<Course> coursesSelected){
 		courses = coursesSelected;
+		//populate the errors list with 36 blank ArrayLists
+		errors = new ArrayList<ArrayList<ArrayList<String>>>();
+		System.out.println("Creating error list...");
+		int count = 0;
+		for(int i = 0; i < 6; i++){
+			errors.add(new ArrayList<ArrayList<String>>());
+			for(int j = 0; j < 6; j++){
+				errors.get(i).add(new ArrayList<String>());
+				System.out.print(count + ", ");
+				count++;
+			}
+		}
+		System.out.println("done.");
+		
+		
 		setTitle("Finals Schedule for User");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 650, 250);
@@ -82,15 +111,15 @@ public class ExamSchedule extends JFrame{
 		contentPane.add(examTable, c);
 		
 		//Create the error bar
-		JTextField errorbar = new JTextField();
-		Color noGo = new Color(200, 0, 0);
-		errorbar.setBackground(noGo);
-		errorbar.setForeground(Color.lightGray);
-		errorbar.setText("ERROR: CSE 148 and CSE 256 CONFLICT -- 10:15 W");
+		final JTextField errorbar = new JTextField();
+		
+		errorbar.setBackground(Color.white);
+		errorbar.setForeground(Color.black);
+		errorbar.setText(statusText);
 		c.ipadx = 0;
 		c.insets = new Insets(10, 0, 0, 0);
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridy = 3;
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridwidth = 2;
@@ -130,7 +159,7 @@ public class ExamSchedule extends JFrame{
 	  		JButton save = new JButton("Save");
 	  		save.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-			  		exportTxt();
+			  		exportCsv();
 					//this should save courses added to a .txt file
 					
 				}
@@ -151,14 +180,8 @@ public class ExamSchedule extends JFrame{
 		finish.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				
-				//this should save courses added to a .txt file
-				
 			}
-		});
-		
-		//c.ipadx = 30;  
-		//c.ipady = 10;  
+		}); 
 		c.gridx = 3;
 		c.gridy = 4;
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -166,10 +189,31 @@ public class ExamSchedule extends JFrame{
 		c.gridwidth = 1;
 		contentPane.add(finish, c);
 
-
-		//contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		
 		setContentPane(contentPane);
 		
+		
+		examTable.addMouseListener(new MouseAdapter() {
+			  public void mouseClicked(MouseEvent e) {
+			      JTable target = (JTable)e.getSource();
+			      int row = target.getSelectedRow();
+			      int column = target.getSelectedColumn();
+
+			      //Change the status bar text based on selected cell
+			      statusText = cellData[row][column];
+			      errorbar.setText(statusText);
+			      //turns red if there's a conflict, white if not
+			      if(statusText.length() > 0 && statusText.startsWith("CONFLICT")){
+			    	errorbar.setBackground(noGo);
+			  		errorbar.setForeground(Color.white);
+			      } else{
+			    	errorbar.setBackground(Color.white);
+				  	errorbar.setForeground(Color.black);
+			      }
+			      revalidate();
+			      repaint();
+			  }
+			});
 	}
 	
 	
@@ -178,9 +222,10 @@ public class ExamSchedule extends JFrame{
 		MeetTimes slot;
 		int time, column = -1, row = -1; 
 		char day;
-		
+		String name, temp;
 		
 		for(int i = 0; i < courses.size(); i++){
+			name = courses.get(i).getCourseCode();
 			slot = courses.get(i).getFinalTime();
 			day = slot.getDay();
 			time = slot.getStartTime();
@@ -224,13 +269,25 @@ public class ExamSchedule extends JFrame{
 				break;
 			}
 			
-			data[row][column] = courses.get(i).getCourseCode();
-			
+			if(exams[row][column] == ""){
+				exams[row][column] = name;
+				cellData[row][column] = courses.get(i).toString();
+
+			} else {
+				if(!exams[row][column].equals("CONFLICT")){
+					temp = exams[row][column];
+					exams[row][column] = "CONFLICT";
+					cellData[row][column] = "CONFLICT: " + temp;
+					
+				}
+				errors.get(row).get(column).add(name);
+				cellData[row][column] += (" and " + name);
+			}
 		}
 		
 	}
 	
-	public void exportTxt(){
+	public void exportCsv(){
 
 
 
@@ -281,78 +338,9 @@ public class ExamSchedule extends JFrame{
 
 		}
 
-
+		
+		
 		}
-	
-	public class CourseTableModel extends AbstractTableModel {
-
-	    private ArrayList<Course> courses;
-
-	    public void CourseTableModel(ArrayList<Course> courses) {
-	        this.courses = new ArrayList<>(courses);
-	    }
-
-	    public int getRowCount() {
-	        return 7;
-	    }
-
-	    @Override
-	    public int getColumnCount() {
-	        return 6;
-	    }
-
-	    @Override
-	    public String getColumnName(int column) {
-	        String name = "??";
-	        switch (column) {
-	            case 0:
-	                name = "Times";
-	                break;
-	            case 1:
-	                name = "Monday";
-	                break;
-	            case 2:
-	            	name = "Tuesday";
-	            	break;
-	            case 3:
-	            	name = "Wednesday";
-	            	break;
-	            case 4:
-	            	name = "Thursday";
-	            	break;
-	            case 5:
-	            	name = "Friday";
-	            	break;
-	        }
-	        return name;
-	    }
-
-	    @Override
-	    public Class<?> getColumnClass(int columnIndex) {
-	        Class type = String.class;
-	        switch (columnIndex) {
-	            case 0:
-	            case 1:
-	                type = Integer.class;
-	                break;
-	        }
-	        return type;
-	    }
-
-	    public Object getValueAt(int rowIndex, int columnIndex) {
-	        Course course = courses.get(rowIndex);
-	        Object value = null;
-	        switch (columnIndex) {
-	            case 0:
-	                break;
-	            case 1:
-	                break;
-	        }
-	        return value;
-	    }            
-	}
-
-
 	
 }
 
