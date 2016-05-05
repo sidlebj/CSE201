@@ -70,12 +70,21 @@ public class GetInfo extends JFrame {
 		contentPane.add(btnNext);
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
+				
 				if (textField.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(contentPane, "Please enter the number of credit hours you "
 							+ "have completed");
-				} 
-				else {
-					completedHours = Integer.parseInt(textField.getText());
+				}else{
+				
+				boolean intEntered = true;
+				
+				 try { 
+				        completedHours = Integer.parseInt(textField.getText()); 
+				    } catch(NumberFormatException e1) { 
+				        intEntered = false; 
+				    }
+				 
+				 if(intEntered){
 					try {
 						if (highSchool.isSelected()) {
 							completedHighSchool = true;
@@ -95,7 +104,14 @@ public class GetInfo extends JFrame {
 					} catch (Exception x) {
 						x.printStackTrace();
 					}
-				}}});
+				} else{
+					
+					JOptionPane.showMessageDialog(contentPane, "Please enter a number value for the credit hours you "
+							+ "have completed");
+					
+				}
+				 
+			}}});
 		JButton btnBack = new JButton("Back");
 		btnBack.setBounds(6, 243, 117, 29);
 		contentPane.add(btnBack);
