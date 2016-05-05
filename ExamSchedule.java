@@ -23,7 +23,6 @@ import javax.swing.table.AbstractTableModel;
 //this class serves as a template for our weekly schedule and exam schedule classes
 public class ExamSchedule extends JFrame{
 
-	private ArrayList<ArrayList<ArrayList<String>>> errors;
 	private ArrayList<Course> courses = new ArrayList<Course>();
 	private Color noGo = new Color(200, 0, 0);
 	private String statusText = "";
@@ -58,19 +57,7 @@ public class ExamSchedule extends JFrame{
 	
 	public ExamSchedule (ArrayList<Course> coursesSelected){
 		courses = coursesSelected;
-		//populate the errors list with 36 blank ArrayLists
-		errors = new ArrayList<ArrayList<ArrayList<String>>>();
-		System.out.println("Creating error list...");
-		int count = 0;
-		for(int i = 0; i < 6; i++){
-			errors.add(new ArrayList<ArrayList<String>>());
-			for(int j = 0; j < 6; j++){
-				errors.get(i).add(new ArrayList<String>());
-				System.out.print(count + ", ");
-				count++;
-			}
-		}
-		System.out.println("done.");
+		
 		
 		
 		setTitle("Finals Schedule for User");
@@ -280,7 +267,6 @@ public class ExamSchedule extends JFrame{
 					cellData[row][column] = "CONFLICT: " + temp;
 					
 				}
-				errors.get(row).get(column).add(name);
 				cellData[row][column] += (" and " + name);
 			}
 		}

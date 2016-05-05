@@ -1,4 +1,33 @@
 import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 public class CourseEntry extends JFrame {
 	public ArrayList<Course> coursesAvailable = new ArrayList<Course>();
@@ -96,7 +125,7 @@ public class CourseEntry extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					dispose();
-					ExamSchedule es = new ExamSchedule();
+					ExamSchedule es = new ExamSchedule(tempCourses);
 					es.setVisible(true);
 				}
 				catch (Exception ex) {
@@ -226,14 +255,62 @@ public class CourseEntry extends JFrame {
 	}
 	
 	public Course[] toCourseArray (List<Course> l) {
+		Course[] c = new Course[l.size()];
+		
+		for (int i = 0; i < c.length; i++) {
+			c[i] = l.get(i);
+		}
+		
+		return c;
+	}
 	
 	public boolean isMajorCourse(Course c) {
+		Course d = new Course(c.getCourseCode().substring(0, 7));
+		boolean is = false;
+		for (int i = 0; i < majorCourses.size(); i++) {
+			if (d.toString().substring(0, 7).equals(majorCourses.get(i).toString().substring(0, 7))) {
+				is = true;
+			}
+		}
+		return is;
+		
+	}
 	
 	
 	
 	public boolean conflicts (Course c) {
+		boolean flag = false; 
+		
+		if (tempCourses.isEmpty()) {
+			flag = false;
+		}
+		else {
+			for (int i = 0; i < tempCourses.size(); i++) {
+				if (c.conflictsWith(tempCourses.get(i))) {
+					flag = true;
+					break;
+				}
+			}
+		}
+		return flag;
+	}
 	
 	public boolean alreadySelected (Course c) {
+		boolean flag = false;
+		if (tempCourses.isEmpty()) {
+			flag = false;
+		}
+		else {
+			for (int i = 0; i < tempCourses.size(); i++) {
+				if (c.getCourseCode().equals(tempCourses.get(i).getCourseCode())) {
+					flag = true;
+					break;
+				}
+			}
+		}
+		return flag;
+		
+	}
 	
 	public void removeFromList (Object o) {
 		Course c = new Course(o.toString());
@@ -246,8 +323,12 @@ public class CourseEntry extends JFrame {
 	}
 	
 	public void clearCourseListModel() {
+		courseListModel.clear();
+	}
 	
 	public void addCourseElements (ListModel<Course> obj) {
+		fillListModel (courseListModel, obj);
+	}
 	
 	public void addCourseElements (Course c) {
 		fillListModel(courseListModel, c);
