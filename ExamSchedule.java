@@ -37,12 +37,13 @@ public class ExamSchedule extends JFrame{
 	
 	public static void main(String[] args) {
 		
-		ExamSchedule gooby = new ExamSchedule();
-		gooby.setVisible(true);
+		//ExamSchedule gooby = new ExamSchedule();
+		//gooby.setVisible(true);
 
 	}
 	
-	public ExamSchedule (){
+	public ExamSchedule (ArrayList<Course> coursesSelected){
+		courses = coursesSelected;
 		setTitle("Finals Schedule for User");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 650, 250);
@@ -68,7 +69,7 @@ public class ExamSchedule extends JFrame{
 		
 		//Create a table that will hold our exams
 		
-		
+		populateTable(coursesSelected);
 		c.ipadx = contentPane.getWidth();
 		c.gridx = 0;
 		c.gridy = 1;
@@ -129,7 +130,7 @@ public class ExamSchedule extends JFrame{
 	  		JButton save = new JButton("Save");
 	  		save.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-			  		exportTxt();
+			  		exportTxt(courses);
 					//this should save courses added to a .txt file
 					
 				}
@@ -171,34 +172,7 @@ public class ExamSchedule extends JFrame{
 		
 	}
 	
-	public ExamSchedule (ArrayList<Course> coursesSelected) {
-		this();
-		
-		
-		
-		c.weightx = 1;
-		c.weighty = 1;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.fill = GridBagConstraints.BOTH;
-		c.anchor = GridBagConstraints.CENTER;
-		c.gridwidth = 3;
-		contentPane.remove(examTable.getTableHeader());
-		
-		c.gridy = 2;
-		contentPane.remove(examTable);
-		
-		populateTable(coursesSelected);
-		
-		c.gridy = 1;
-		contentPane.add(examTable.getTableHeader());
-		
-		c.gridy = 2;
-		contentPane.add(examTable);
-		
-		contentPane.revalidate();
-		contentPane.repaint();
-	}
+	
 	
 	public void populateTable(ArrayList<Course> courses){
 		MeetTimes slot;
@@ -256,7 +230,7 @@ public class ExamSchedule extends JFrame{
 		
 	}
 	
-	public void exportTxt(){
+	public void exportTxt(ArrayList<Course> ourCourses){
 
 
 
@@ -288,11 +262,11 @@ public class ExamSchedule extends JFrame{
 		FileWriter fw = new FileWriter(fc.getSelectedFile()+".csv");
 
 		fw.write("CRN,Course Name,Day,Start,End,Final Time\n");
-		System.out.println(courses.size());
-		for(int i = 0; i<courses.size(); i++){
+		System.out.println(ourCourses.size());
+		for(int i = 0; i<ourCourses.size(); i++){
 
 		//write to the file
-		        fw.write(courses.get(i).toString());
+		        fw.write(ourCourses.get(i).toString());
 		        fw.write("\n");
 		}
 		
