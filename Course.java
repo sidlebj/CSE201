@@ -59,13 +59,20 @@ public class Course implements Comparable{
 			return courseCode;
 		}
 		else
-			return crn + "\t" + courseCode + "\t" + creditHours + "\t" + courseTimesToString() + "\t" + finalTime + " ";
+			return crn + "  " + courseCode + "  " + creditHours + "  " + courseTimesToString();
 	}
 	
 	public String courseTimesToString() {
 		String ct = "";
+		
+		if (courseTimes.length == 0)	 {
+			ct = "";
+		}
 		if (courseTimes.length == 1) {
-			ct = courseTimes[0].toString();
+			if (courseTimes[0].getDay() == 'N' || courseTimes[0].getStartTime() == 9999) {
+				ct = "";
+			}
+			else ct = courseTimes[0].toString();
 		}
 		else if (courseTimes.length == 2) {
 			if (courseTimes[0].isSameTimeAs(courseTimes[1])) {
